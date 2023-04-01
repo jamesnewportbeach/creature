@@ -1,10 +1,9 @@
 {
-	"name": "creatureweb",
+	"name": "sveltekit-2",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"gun": "node ./server.js",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
@@ -14,16 +13,14 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
-		"@auth/core": "^0.5.1",
-		"@auth/sveltekit": "^0.3.0",
 		"@fontsource/fira-mono": "^4.5.10",
-		"@hapi/hapi": "^21.3.1",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@playwright/test": "^1.28.1",
-		"@sveltejs/adapter-vercel": "^1.0.0",
+		"@sveltejs/adapter-vercel": "^2.4.1",
 		"@sveltejs/kit": "^1.0.0",
 		"@types/cookie": "^0.5.1",
 		"autoprefixer": "^10.4.14",
+		"daisyui": "^2.51.5",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte3": "^4.0.0",
@@ -31,11 +28,12 @@
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
 		"svelte": "^3.54.0",
-		"svelte-check": "^2.9.2",
+		"svelte-check": "^3.1.4",
+		"svelte-preprocess": "^5.0.3",
 		"tailwindcss": "^3.3.1",
-		"typescript": "^4.9.3",
+		"typescript": "^5.0.3",
 		"vite": "^4.0.0",
-		"vitest": "^0.25.3"
+		"vitest": "^0.29.0"
 	},
 	"type": "module"
 }
