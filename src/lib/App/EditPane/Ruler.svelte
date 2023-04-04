@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Ruler from "svelte-ruler/src/Ruler.svelte";
-  import { userStore } from "../../../stores/ui/uiStore";
+	import Ruler from 'svelte-ruler/src/Ruler.svelte';
+	import { userStore } from '$lib/stores/ui/uiStore';
 </script>
 
 {#if $userStore.panelOpen && $userStore.ruler}
-  <div class="w-full">
-    <Ruler type="horizontal" height={32} />
-    <!-- Ruler
+	<div class="w-full">
+		<Ruler type="horizontal" height={32} />
+		<!-- Ruler
               height={32}
               backgroundColor={darkMode
                 ? "rgba(0,0,0,.1)"
@@ -16,5 +16,5 @@
               type="horizontal"
               ref={rulerRef}
             / -->
-  </div>
+	</div>
 {/if}

@@ -2,13 +2,14 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	import { privateStore, publicStore, gunUser, gun } from '../stores/gun/gunStore';
-
+	import { privateStore, publicStore, gunUser } from '$lib/stores/gun/gunStore';
 	import { activeNodeStore, edgesStore, nodesStore } from '$lib/app-store';
 
 	import MindMap from '$lib/MindMap/MindMap.svelte';
 	import Panel from '$lib/Panel/Panel.svelte';
 	import Tabs from '$lib/Tabs.svelte';
+	import Login from '$lib/ui/Login.svelte';
+	import Register from '$lib/ui/Register.svelte';
 
 	let path = '';
 	$: path = formatPath($page.url);
@@ -76,6 +77,12 @@
 		<MindMap {privateStore} {publicStore} {gunUser} currentPage={path} />
 	</div>
 	<div class="flex-initial w-1/3 h-full bg-slate-800 z-10">
+		<Login />
+
+		User:
+
+		<Register />
+
 		<Panel {privateStore} {publicStore} {gunUser} currentPage={path} />
 	</div>
 </div>

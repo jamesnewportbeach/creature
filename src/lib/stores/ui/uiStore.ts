@@ -1,13 +1,5 @@
 import { writable } from "svelte/store";
 
-export const userStore = writable({
-  dark: true,
-  panelOpen: true,
-  outlines: false,
-  ruler: false,
-  theme: "zinc",
-  language: "en",
-});
 export const inputFocusedStore = writable(false);
 export const focusedStore = writable(null);
 export const templateStore = writable({});

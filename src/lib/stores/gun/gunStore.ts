@@ -1,6 +1,17 @@
 import Gun from "./initGun";
 import { nanoid } from "nanoid";
+import { writable } from "svelte/store";
+
 // import { GUN_PEER_URL } from '$env/static/private'
+
+export const userStore = writable({
+  dark: true,
+  panelOpen: true,
+  outlines: false,
+  ruler: false,
+  theme: "zinc",
+  language: "en",
+});
 
 export const PUBLIC_AREA = "public";
 
@@ -10,6 +21,8 @@ const now = () => {
 };
 // https://mogwai.herokuapp.com/gun
 // http://localhost:8765/gun
+
+
 const getPeers = () => {
   if (process.env.NODE_ENV === "development") {
     return ["https://shrouded-shelf-34915.herokuapp.com/gun"];
@@ -78,6 +91,8 @@ const handleLogin = (u, n, cb) => {
         .get(PUBLIC_USERS)
         .get(n.alias)
         .put(u, () => {
+          console.log(n);
+          console.log(u);
           cb(n, u);
         });
     });

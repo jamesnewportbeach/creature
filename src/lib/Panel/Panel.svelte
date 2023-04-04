@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { nanoid } from 'nanoid';
 	import { page } from '$app/stores';
-
 	import { activeNodeStore, edgesStore, nodesStore } from '$lib/app-store';
 
 	export let currentPage = '';
