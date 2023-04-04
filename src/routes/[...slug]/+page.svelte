@@ -1,5 +1,5 @@
 <script>
-  import { page } from "$app/stores";
+	import App from "$lib/App.svelte";
 </script>
 
-Page: {$page.url.pathname} :::::: {$page.url.hostname}
+<App />

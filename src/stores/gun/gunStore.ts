@@ -1,5 +1,6 @@
 import Gun from "./initGun";
 import { nanoid } from "nanoid";
+// import { GUN_PEER_URL } from '$env/static/private'
 
 export const PUBLIC_AREA = "public";
 
@@ -11,9 +12,9 @@ const now = () => {
 // http://localhost:8765/gun
 const getPeers = () => {
   if (process.env.NODE_ENV === "development") {
-    return [process.env.GUN_PEER_URL];
+    return ["https://shrouded-shelf-34915.herokuapp.com/gun"];
   } else {
-    return [process.env.GUN_PEER_URL];
+    return ["https://shrouded-shelf-34915.herokuapp.com/gun"];
   }
 };
 

@@ -1,4 +1,5 @@
-<script lang="ts">
+<script>
+	import App from "$lib/App.svelte";
 </script>
 
-Hello! Welcome!
+<App />

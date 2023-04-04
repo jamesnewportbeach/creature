@@ -233,12 +233,12 @@
 
     nodesStore.subscribe((nodes) => {
       Graph.graphData({ nodes, links: $edgesStore });
-      //console.log({ nodes: $nodesStore, links: $edgesStore });
+      console.log({ nodes: $nodesStore, links: $edgesStore });
     });
 
     edgesStore.subscribe((links) => {
       Graph.graphData({ nodes: $nodesStore, links });
-      //console.log({ nodes: $nodesStore, links: $edgesStore });
+      console.log({ nodes: $nodesStore, links: $edgesStore });
     });
   });
 
