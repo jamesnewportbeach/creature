@@ -78,11 +78,7 @@
 	</div>
 	<div class="flex-initial w-1/3 h-full bg-slate-800 z-10">
 		<Login />
-
-		User:
-
 		<Register />
-
 		<Panel {privateStore} {publicStore} {gunUser} currentPage={path} />
 	</div>
 </div>

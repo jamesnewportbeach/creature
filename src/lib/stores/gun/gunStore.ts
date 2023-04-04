@@ -4,14 +4,7 @@ import { writable } from "svelte/store";
 
 // import { GUN_PEER_URL } from '$env/static/private'
 
-export const userStore = writable({
-  dark: true,
-  panelOpen: true,
-  outlines: false,
-  ruler: false,
-  theme: "zinc",
-  language: "en",
-});
+export const userStore = writable(null);
 
 export const PUBLIC_AREA = "public";
 
@@ -81,18 +74,16 @@ const PUBLIC_USERS = "users",
   publicSpace = gun.get(PUBLIC_AREA);
 
 const handleLogin = (u, n, cb) => {
-  console.log(n);
   if (n.err) {
     cb(n);
   } else {
     privateStore.update(null, u, () => {
-      console.log("updated!!!");
       publicSpace
         .get(PUBLIC_USERS)
         .get(n.alias)
         .put(u, () => {
-          console.log(n);
-          console.log(u);
+          u.pub = n.sea.pub;
+          userStore.set(u);
           cb(n, u);
         });
     });
@@ -279,7 +270,7 @@ export const privateStore = customStore(gunUser.map(), {
       }
     });
   },
-  createUser: (alias, password, cb) => {
+  register: (alias, password, cb) => {
     gunUser.create(alias, password, (n) => {
       handleLogin(
         {
@@ -293,9 +284,7 @@ export const privateStore = customStore(gunUser.map(), {
     });
   },
   login: (alias, password, cb) => {
-    console.log("logging in...");
     gunUser.auth(alias, password, (n) => {
-      console.log("authing...");
       handleLogin(
         {
           lastLoginAt: now(),
@@ -309,6 +298,7 @@ export const privateStore = customStore(gunUser.map(), {
   },
   logout: (cb) => {
     gunUser.leave().once(cb);
+    userStore.set(null);
   },
   authorize: (cb) => {
     gunUser.once((d) => {

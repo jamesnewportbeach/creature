@@ -9,7 +9,7 @@
 	export let selected = false;
 
 	function click(e) {
-		console.log('clicking....');
+		// console.log('clicking....');
 		dispatch('buttonClick', {});
 	}
 </script>
