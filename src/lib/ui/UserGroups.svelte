@@ -1,6 +1,6 @@
 <script>
 	import Group from '$lib/ui/Group.svelte';
-	import { publicStore, gun } from '$lib/stores/gun/store';
+	import { publicStore } from '$lib/stores/gun/store';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 

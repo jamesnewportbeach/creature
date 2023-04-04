@@ -2,12 +2,12 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	import { privateStore, publicStore, gunUser } from '$lib/stores/gun/gunStore';
-	import { activeNodeStore, edgesStore, nodesStore } from '$lib/app-store';
+	import { publicStore } from '$lib/stores/gun/store';
+	import { activeNodeStore, edgesStore, nodesStore } from '$lib/stores/ui/app-store';
 
-	import MindMap from '$lib/MindMap/MindMap.svelte';
-	import Panel from '$lib/Panel/Panel.svelte';
-	import Tabs from '$lib/Tabs.svelte';
+	import MindMap from '$lib/ui/MindMap/MindMap.svelte';
+	import Panel from '$lib/ui/Panel.svelte';
+	import Tabs from '$lib/ui/Tabs.svelte';
 
 	let path = '';
 	$: path = formatPath($page.url);

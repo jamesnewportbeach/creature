@@ -1,5 +1,5 @@
 <script>
-	import { privateStore, userStore } from '$lib/stores/gun/gunStore';
+	import { privateStore, userStore } from '$lib/stores/gun/store';
 	import Form from '$lib/common/Form.svelte';
 	import Button from '$lib/common/Button.svelte';
 	import Toast from '$lib/common/Toast.svelte';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { privateStore, userStore } from '$lib/stores/gun/gunStore';
+	import { privateStore, userStore } from '$lib/stores/gun/store';
 	import Tooltip from '$lib/common/Tooltip.svelte';
 	import Button from '$lib/common/Button.svelte';
 	import Icon from '$lib/common/Icon.svelte';

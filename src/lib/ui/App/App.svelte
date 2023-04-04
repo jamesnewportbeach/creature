@@ -10,7 +10,7 @@
 		defaultMetaProperties
 	} from './EditPane/common.interface';
 
-	import { privateStore, publicStore, gunUser } from '../stores/gun/gunStore';
+	import { privateStore, publicStore, gunUser } from '../stores/gun/store';
 
 	import { userStore, focusedStore, nodeStore, templateStore } from '../stores/ui/uiStore';
 

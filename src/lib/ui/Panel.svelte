@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { nanoid } from 'nanoid';
 	import { page } from '$app/stores';
-	import { activeNodeStore, edgesStore, nodesStore } from '$lib/app-store';
-	import { privateStore, publicStore, gunUser } from '$lib/stores/gun/gunStore';
+	import { activeNodeStore, edgesStore, nodesStore } from '$lib/stores/ui/app-store';
+	import { privateStore, publicStore, gunUser } from '$lib/stores/gun/store';
 	import Login from '$lib/ui/Login.svelte';
 	import Register from '$lib/ui/Register.svelte';
 

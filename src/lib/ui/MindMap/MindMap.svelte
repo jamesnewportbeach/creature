@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { Image, createIconMaterial, iconMappings, uuidv4 } from './utils';
-	import { activeNodeStore, edgesStore, nodesStore } from '$lib/app-store';
+	import { activeNodeStore, edgesStore, nodesStore } from '$lib/stores/ui/app-store';
 	import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 	import * as THREE from 'three';
 	import SnakeImage from './assets/spiny_bush_viper.jpg';
