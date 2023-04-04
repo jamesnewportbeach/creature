@@ -10,11 +10,8 @@
 	import Panel from '$lib/Panel/Panel.svelte';
 	import Tabs from '$lib/Tabs.svelte';
 
-	page.subscribe((d) => {
-		console.log(d);
-	});
-
 	let path = '';
+	$: path;
 
 	onMount(() => {
 		let hostname = 'www';
@@ -71,7 +68,7 @@
 
 <div class="flex grow text-white">
 	<div class="flex-none w-2/3 h-full bg-slate-600">
-		Page: {$page.url.pathname} :::::: {$page.url.hostname} ::: {path}
+		Path: {path}
 
 		<MindMap {privateStore} {publicStore} {gunUser} currentPage={path} />
 	</div>
