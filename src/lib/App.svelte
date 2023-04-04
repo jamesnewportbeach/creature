@@ -11,28 +11,28 @@
 	import Tabs from '$lib/Tabs.svelte';
 
 	let path = '';
-	$: path;
+	$: path = formatPath($page.url);
 
-	onMount(() => {
-		let hostname = 'www';
+	function formatPath(p) {
 		let sitename = 'creatureweb.org';
 		let path = '';
 
-		if ($page.url.hostname.indexOf('.') > -1) {
+		if (p.hostname.indexOf('.') > -1) {
 			path =
-				($page.url.hostname.split('.')[1] === 'localhost'
-					? sitename
-					: $page.url.hostname.split('.')[1]) +
+				(p.hostname.split('.')[1] === 'localhost' ? sitename : $page.url.hostname.split('.')[1]) +
 				'/' +
-				$page.url.hostname.split('.')[0];
+				p.hostname.split('.')[0];
 		} else {
-			path = $page.url.hostname === 'localhost' ? sitename : $page.url.hostname;
+			path = p.hostname === 'localhost' ? sitename : p.hostname;
 		}
 
-		if ($page.url.pathname !== '/') {
-			path = path + $page.url.pathname;
+		if (p.pathname !== '/') {
+			path = path + p.pathname;
 		}
+		return path;
+	}
 
+	onMount(() => {
 		console.log(path);
 
 		const pathParts = path.split('/');
@@ -50,14 +50,17 @@
 				}
 
 				if (i === pathParts.length - 1) {
-					publicStore.read(path).on((d) => {
-						console.log('WEEEE REEEADDDD');
-						console.log(d);
+					publicStore.read(path).once((d) => {
+						if (d) {
+							console.log(d);
+						} else {
+							console.log('Doesnt exist');
+						}
 					});
 				}
 			}
 		});
-		// activeNodeStore.set(pathParts[1]);
+		activeNodeStore.set(pathParts[pathParts.length - 1]);
 	});
 </script>
 
