@@ -12,7 +12,7 @@
 	const signIn = () => {
 			console.log('Logging in...');
 			console.log(formData);
-			privateStore.login(formData.login_alias.value, formData.login_password.value, (res) => {
+			privateStore.login(formData.alias.value, formData.password.value, (res) => {
 				console.log(res);
 			});
 		},
@@ -23,8 +23,8 @@
 		};
 
 	let formData = {
-		login_alias: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },
-		login_password: { label: 'Password', type: 'password', value: 'Appleisdumb1' }
+		alias: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },
+		password: { label: 'Password', type: 'password', value: 'Appleisdumb1' }
 	};
 </script>
 
@@ -36,8 +36,8 @@
 	</Tooltip>
 {:else}
 	<Form bind:data={formData} on:submit={signIn}>
-		<div class="mt-4">
-			<Button type="button" on:buttonClick={signIn}>Log in</Button>
+		<div class="mt-3 text-right">
+			<Button classNames="inline-block" type="button" on:buttonClick={signIn}>Log in</Button>
 		</div>
 	</Form>
 

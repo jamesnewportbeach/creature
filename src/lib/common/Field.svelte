@@ -16,9 +16,9 @@
 	export let required = false;
 	export let showRemove = false;
 
-	export let containerClasses = 'mb-2';
-	export let labelClasses = 'col-span-2 pt-1 capitalize opacity-50';
-	export let inputClasses = '';
+	export let containerClasses = 'mb-2 grid grid-cols-12 gap-3 text-sm';
+	export let labelClasses = 'col-span-4 pt-1 opacity-50';
+	export let inputClasses = 'col-span-8 w-full py-1 px-2 outline-none rounded';
 
 	let canDelete = false;
 
@@ -46,6 +46,8 @@
 		{disabled}
 		{required}
 		{list}
+		{labelClasses}
+		classNames={inputClasses}
 		on:change={change}
 	/>
 </div>

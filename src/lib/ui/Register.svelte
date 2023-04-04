@@ -10,29 +10,24 @@
 
 	const submit = (e) => {
 		const d = e.detail;
-		privateStore.register(
-			formData.register_alias.value,
-			formData.register_password.value,
-			(res) => {
-				if (res.err) {
-					errorText = res.err;
-					isError = true;
-				}
+		privateStore.register(formData.alias.value, formData.password.value, (res) => {
+			if (res.err) {
+				errorText = res.err;
+				isError = true;
 			}
-		);
+		});
 	};
 
 	let formData = {
-		register_alias: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },
-		register_password: { label: 'Password', type: 'password', value: 'Appleisdumb1' }
+		alias: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },
+		password: { label: 'Password', type: 'password', value: 'Appleisdumb1' }
 	};
 </script>
 
 {#if !$userStore}
 	<Form bind:data={formData} on:submit={submit}>
-		<div class="mt-4 text-right">
-			<!-- a href="/login" class="mr-10">Log in</a -->
-			<Button type="submit" on:buttonClick={submit}>Register</Button>
+		<div class="mt-3 text-right">
+			<Button classNames="inline-block" type="submit" on:buttonClick={submit}>Register</Button>
 		</div>
 	</Form>
 

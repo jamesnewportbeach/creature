@@ -3,11 +3,11 @@
 	import { nanoid } from 'nanoid';
 	import { page } from '$app/stores';
 	import { activeNodeStore, edgesStore, nodesStore } from '$lib/app-store';
+	import { privateStore, publicStore, gunUser } from '$lib/stores/gun/gunStore';
+	import Login from '$lib/ui/Login.svelte';
+	import Register from '$lib/ui/Register.svelte';
 
 	export let currentPage = '';
-	export let privateStore;
-	export let publicStore;
-	export let gunUser;
 
 	let value = '',
 		active,
@@ -89,6 +89,11 @@
 	$: currentPage = $page.url.pathname ? $page.url.pathname.toLowerCase() : null;
 	$: graph = decodeURI(currentPage.split('/')[1]);
 </script>
+
+<div class="px-3">
+	<Login />
+	<Register />
+</div>
 
 <form class="p-3" on:submit|preventDefault>
 	<div class="relative">
