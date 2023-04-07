@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import Input from '$lib/common/Input.svelte';
 	import Button from '$lib/common/Button.svelte';
+	import Icon from './Icon.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -12,13 +13,15 @@
 
 	export let type = 'text';
 	export let id = '';
+
 	export let disabled = false;
 	export let required = false;
-	export let showRemove = false;
+	export let readonly = false;
+	export let disableDelete = true;
 
 	export let containerClasses = 'mb-2 grid grid-cols-12 gap-3 text-sm';
 	export let labelClasses = 'col-span-4 pt-1 opacity-50';
-	export let inputClasses = 'col-span-8 w-full py-1 px-2 outline-none rounded';
+	export let inputClasses = 'col-span-8 w-full py-1 px-2 outline-none rounded bg-slate-600';
 
 	let canDelete = false;
 
@@ -43,6 +46,7 @@
 		{id}
 		bind:value
 		{placeholder}
+		{readonly}
 		{disabled}
 		{required}
 		{list}
@@ -50,4 +54,9 @@
 		classNames={inputClasses}
 		on:change={change}
 	/>
+	{#if !disableDelete}
+		<Button ghost={true} on:buttonClick={remove}>
+			<i class="fal fa-times" />
+		</Button>
+	{/if}
 </div>

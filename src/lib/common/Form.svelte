@@ -4,6 +4,7 @@
 	import Field from '$lib/common/Field.svelte';
 
 	export let data = {};
+	export let disableDelete = true;
 	export let classNames = '';
 
 	let values = {};
@@ -20,10 +21,16 @@
 		dispatch('submit', values);
 	};
 
-	const updateValue = (e, item) => {
-		values[item.id] = e.detail.value;
-		dispatch('valuesChanged', values);
-	};
+	const updateValue = (e, key, item) => {
+			let o = {};
+			o[key] = item.value;
+			values[key] = item.value;
+			dispatch('valueChanged', o);
+			dispatch('valuesChanged', values);
+		},
+		removeValue = (e, key) => {
+			dispatch('removeAttribute', { key });
+		};
 </script>
 
 <form on:submit|preventDefault={submit} class={classNames}>
@@ -32,10 +39,13 @@
 			id={key}
 			label={value.label}
 			type={value.type}
+			{disableDelete}
 			disabled={value.disabled}
 			required={value.required}
+			readonly={value.readonly}
 			bind:value={value.value}
-			on:change={(e) => updateValue(e, value)}
+			on:change={(e) => updateValue(e, key, value)}
+			on:remove={(e) => removeValue(e, key)}
 		/>
 	{/each}
 

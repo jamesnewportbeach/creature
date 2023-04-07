@@ -6,7 +6,6 @@
 	export let show = false;
 
 	function cancel(e) {
-		console.log('clicking....');
 		dispatch('cancel', {});
 	}
 </script>

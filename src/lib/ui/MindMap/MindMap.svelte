@@ -1,5 +1,9 @@
 <script>
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import { publicStore, privateStore } from '$lib/stores/gun/store';
+	import { formatPath } from '$lib/ui/utils';
 	import { Image, createIconMaterial, iconMappings, uuidv4 } from './utils';
 	import { activeNodeStore, edgesStore, nodesStore } from '$lib/stores/ui/app-store';
 	import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
@@ -8,17 +12,16 @@
 	import FontJSON from './assets/Roboto-msdf.json';
 	import FontImage from './assets/Roboto-msdf.png';
 
-	export let currentPage;
-
 	let Graph, container, ForceGraph3D, SpriteText, SVGLoader, BufferGeometryUtils, ThreeMeshUI;
 
+	$: path = formatPath($page.url);
 	$: outerHeight = 0;
 	$: outerWidth = 0;
 
 	let selectedNodes = new Set();
 
 	function bodyClick(event) {
-		console.log(event);
+		// console.log(event);
 		//m.x = event.clientX;
 		//m.y = event.clientY;
 	}
@@ -26,6 +29,11 @@
 	const openBubble = (n) => {
 		console.log(n);
 	};
+
+	activeNodeStore.subscribe((d) => {
+		// console.log(d);
+		//console.log(path);
+	});
 
 	onMount(async () => {
 		const threeMeshUIModule = await import('three-mesh-ui/src/three-mesh-ui');
@@ -82,6 +90,14 @@
 
 				activeNodeStore.set(node.id);
 				Graph.nodeThreeObject(Graph.nodeThreeObject());
+
+				const n = node.id.split('/');
+				const omit = n.shift();
+
+				console.log(n);
+				console.log(omit);
+
+				goto('/' + n.join('/'));
 			})
 			.nodeThreeObject((node) => {
 				const sprite = new SpriteText(node.label);
@@ -209,20 +225,20 @@
 		testPanel.position.set(0, 0, 0);
 		testPanel.rotation.x = 0;
 
-		console.log(room);
-		console.log(testPanel);
+		//console.log(room);
+		//console.log(testPanel);
 
 		Graph.scene().add(testPanel);
 		ThreeMeshUI.update();
 
 		nodesStore.subscribe((nodes) => {
 			Graph.graphData({ nodes, links: $edgesStore });
-			console.log({ nodes: $nodesStore, links: $edgesStore });
+			//console.log({ nodes: $nodesStore, links: $edgesStore });
 		});
 
 		edgesStore.subscribe((links) => {
 			Graph.graphData({ nodes: $nodesStore, links });
-			console.log({ nodes: $nodesStore, links: $edgesStore });
+			//console.log({ nodes: $nodesStore, links: $edgesStore });
 		});
 	});
 

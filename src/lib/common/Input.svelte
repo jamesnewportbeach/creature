@@ -13,6 +13,7 @@
 	export let type = 'text';
 	export let id = '';
 	export let disabled = false;
+	export let readonly = false;
 	export let required = false;
 	export let classNames = '';
 	export let labelClasses = '';
@@ -52,6 +53,7 @@
 			bind:value
 			rows={3}
 			{placeholder}
+			readonly={readonly ? true : undefined}
 			disabled={disabled ? true : undefined}
 			{required}
 			class={classNames}
@@ -64,6 +66,7 @@
 			{id}
 			bind:value
 			{placeholder}
+			readonly={readonly ? true : undefined}
 			disabled={disabled ? true : undefined}
 			{required}
 			class={classNames}
@@ -77,6 +80,7 @@
 		type="date"
 		{id}
 		bind:value
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -89,6 +93,7 @@
 		type="datetime-local"
 		{id}
 		bind:value
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -101,6 +106,7 @@
 		type="time"
 		{id}
 		bind:value
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -114,6 +120,7 @@
 		{id}
 		bind:value
 		{placeholder}
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -127,6 +134,7 @@
 		{id}
 		bind:value
 		{placeholder}
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -139,6 +147,7 @@
 		{id}
 		bind:value
 		{placeholder}
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -150,6 +159,7 @@
 		type="range"
 		{id}
 		bind:value
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		on:change={change}
@@ -161,6 +171,7 @@
 		{id}
 		bind:value
 		{placeholder}
+		readonly={readonly ? true : undefined}
 		disabled={disabled ? true : undefined}
 		{required}
 		class={classNames}
@@ -173,11 +184,16 @@
 		type="checkbox"
 		{id}
 		bind:checked={value}
-		{disabled}
+		readonly={readonly ? true : undefined}
+		disabled={disabled ? true : undefined}
 		{required}
 		class:mt-1={true}
 		on:keyup={change}
 	/>
+{/if}
+
+{#if type === 'object'}
+	{value}
 {/if}
 
 {#if list}

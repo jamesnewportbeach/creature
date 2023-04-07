@@ -1,81 +1,88 @@
 <script>
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-
-	import { publicStore } from '$lib/stores/gun/store';
 	import { activeNodeStore, edgesStore, nodesStore } from '$lib/stores/ui/app-store';
-
 	import MindMap from '$lib/ui/MindMap/MindMap.svelte';
 	import Panel from '$lib/ui/Panel.svelte';
-	import Tabs from '$lib/ui/Tabs.svelte';
+	import { userStore, usersStore, privateStore, publicStore } from '$lib/stores/gun/store';
+	import { onMount, onDestroy } from 'svelte';
 
-	let path = '';
-	$: path = formatPath($page.url);
+	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
-	function formatPath(p) {
-		let sitename = 'creatureweb.org';
-		let path = '';
-
-		if (p.hostname.indexOf('.') > -1) {
-			path =
-				(p.hostname.split('.')[1] === 'localhost' ? sitename : $page.url.hostname.split('.')[1]) +
-				'/' +
-				p.hostname.split('.')[0];
-		} else {
-			path = p.hostname === 'localhost' ? sitename : p.hostname;
-		}
-
-		if (p.pathname !== '/') {
-			path = path + p.pathname;
-		}
-		return path;
-	}
+	const beforeUnload = () => {
+			if ($userStore) logout();
+		},
+		logout = () => {
+			privateStore.logout($userStore.pub, tenant, () => {
+				// console.log('logged out!!!');
+			});
+		};
 
 	onMount(() => {
-		console.log(path);
+		if (tenant) {
+			/*
+			publicStore.read(tenant).on((d) => {
+				let o = Object.fromEntries(Object.entries(d).filter(([_, v]) => v != null && _ !== '_'));
+				console.log(o);
+			});
+			*/
 
-		const pathParts = path.split('/');
-
-		path.split('/').forEach((data, i) => {
-			if (data) {
-				nodesStore.update((d) => {
-					return [...d, ...[{ id: pathParts[i], label: decodeURI(pathParts[i]) }]];
-				});
-
-				if (i > 0) {
-					edgesStore.update((d) => {
-						return [...d, ...[{ source: pathParts[i - 1], target: pathParts[i] }]];
-					});
+			publicStore.read(tenant + '/users').on((d) => {
+				if (d) {
+					let o = Object.fromEntries(Object.entries(d).filter(([_, v]) => v != null && _ !== '_'));
+					usersStore.set(o);
+					if ($userStore && !($userStore.pub in $usersStore)) {
+						logout();
+					}
 				}
-
-				if (i === pathParts.length - 1) {
-					publicStore.read(path).once((d) => {
-						if (d) {
-							console.log(d);
+				/*
+				if (d.length === 1) {
+					const u = d[0][1];
+					delete u._;
+					Object.keys(u).forEach((k) => {
+						if (u[k] === null) {
+							delete users[k];
 						} else {
-							console.log('Doesnt exist');
+							if (u[k]['#']) {
+								users[k] = u[k]['#'];
+							}
 						}
 					});
+					users = d[0][1];
+					console.log(users);
 				}
-			}
-		});
-		activeNodeStore.set(pathParts[pathParts.length - 1]);
+				*/
+			});
+		}
 	});
 </script>
+
+<svelte:window on:beforeunload={beforeUnload} />
 
 <svelte:head>
 	<title>Dream for Fi</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div class="flex grow text-white">
+<div class="flex grow text-white h-full">
 	<div class="flex-none w-2/3 h-full bg-slate-600">
-		Path: {path}
-		<MindMap currentPage={path} />
+		{#if $usersStore}
+			{#each Object.entries($usersStore) as [key, item] (key)}
+				{#if typeof item === 'object'}
+					<div>
+						<i class="fal fa-user mr-2" />
+						{#if key === $userStore?.pub}
+							{$userStore.alias}
+						{:else}
+							{item['#']}
+						{/if}
+					</div>
+				{/if}
+			{/each}
+		{/if}
+
+		<!-- MindMap / -->
 	</div>
-	<div class="flex-initial w-1/3 h-full bg-slate-800 z-10">
-		<Panel currentPage={path} />
+	<div class="flex-initial w-1/3 h-full bg-slate-800 z-10 overflow-y-auto">
+		<Panel />
 	</div>
 </div>
-
-<Tabs currentPage={path} />
