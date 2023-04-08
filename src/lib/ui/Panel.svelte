@@ -97,7 +97,7 @@
 		},
 		removeAttribute = (e) => {
 			console.log($activeNodeStore + '/' + e.detail.key);
-			publicStore.delete({ from: $activeNodeStore, key: e.detail.key }, (d) => {});
+			publicStore.delete($activeNodeStore + '/' + e.detail.key, (d) => {});
 		},
 		change = (key) => {
 			/*
@@ -117,21 +117,31 @@
 
 	let active = {};
 	$: active; // = $nodesStore.find((d) => d.id === $activeNodeStore) || {};
-	$: path = formatPath($page.url);
+	$: path = '';
+	$: endPath = '';
+	$: parentPath = '';
 	$: graph = decodeURI(path.split('/')[1]);
 
 	$: isRoot = $page.url.pathname === '/';
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
-	onMount(() => {
-		//console.log(isRoot);
-		//console.log(tenant);
-		// activeNodeStore.set(path);
+	const setPage = () => {
+		if (tenant) {
+			const pathParts = $page.url.pathname.split('/');
+			if (pathParts.length > 1) {
+				endPath = pathParts.pop();
+				const start = pathParts.shift();
+				parentPath = pathParts.join('/');
+			}
 
-		const pathParts = path.split('/');
+			const f = tenant + '/' + $page.url.pathname.replace('/', '');
+			activeNodeStore.set(f);
+		}
+	};
 
-		let parentPath = '';
-
+	page.subscribe((p) => {
+		setPage();
+		/*
 		path.split('/').forEach((data, i) => {
 			if (data) {
 				nodesStore.update((d) => {
@@ -159,58 +169,94 @@
 				}
 			}
 		});
+		*/
 	});
 
-	activeNodeStore.subscribe((activeNode) => {
-		active = {};
-		if (activeNode) {
-			// console.log(activeNode);
+	onMount(() => {
+		setPage();
+	});
 
-			publicStore.read(activeNode).on((d) => {
+	const toDateString = (date) => {
+		return (
+			date.getFullYear().toString() +
+			'-' +
+			('0' + (date.getMonth() + 1)).slice(-2) +
+			'-' +
+			('0' + date.getDate()).slice(-2) +
+			'T' +
+			date.toTimeString().slice(0, 5)
+		);
+	};
+
+	activeNodeStore.subscribe((activeNode) => {
+		if (activeNode) {
+			console.log($activeNodeStore);
+
+			publicStore.read($activeNodeStore).on((d) => {
 				if (d) {
 					//console.log('change');
 					//console.log(d);
+					const newActive = {};
 					Object.keys(d).forEach((key) => {
 						if (key !== '_') {
 							if (d[key] === null) {
-								delete active[key];
+								// delete active[key];
 							} else {
-								if (
-									typeof d[key] === 'string' ||
-									typeof d[key] === 'number' ||
-									typeof d[key] === 'boolean'
-								) {
-									if (d[key]) active[key] = { type: 'text', label: key, value: d[key] };
+								let t = typeof d[key];
+								if (t === 'string' || t === 'number' || t === 'boolean') {
+									if (d[key] !== null) {
+										let newItem = { label: key, value: d[key] };
+
+										if (t === 'number') {
+											const testDate = new Date(d[key]);
+											if (testDate.getMonth()) {
+												newItem.type = 'datetime-local';
+												newItem.value = toDateString(testDate);
+											} else {
+												newItem.type = t;
+											}
+										} else if (t === 'boolean') {
+											newItem.type = 'checkbox';
+										} else if (t === 'string') {
+											newItem.type = 'text';
+										} else {
+										}
+										newActive[key] = newItem;
+									}
 								} else {
 									//console.log(d[key]['#']);
-									active[key] = { type: 'object', label: key, value: d[key]['#'] };
+									newActive[key] = { type: 'object', label: key, value: d[key]['#'] };
 								}
 							}
 						}
 					});
+
+					active = newActive;
 				}
 			});
 		}
 	});
 </script>
 
+{#if $userStore}
+	<div class="text-right">
+		<Tooltip position="left" text="Log out {$userStore.alias}">
+			<Button ghost={true} on:buttonClick={signOut}>
+				<Icon classNames="fas fa-sign-out" />
+			</Button>
+		</Tooltip>
+	</div>
+{/if}
+
 <div class="px-3 mt-3 text-sm">
-	{#if $userStore}
-		<div class="float-right">
-			<Tooltip position="left" text="Log out {$userStore.alias}">
-				<Button ghost={true} on:buttonClick={signOut}>
-					<Icon classNames="fas fa-sign-out" />
-				</Button>
-			</Tooltip>
-		</div>
-	{/if}
+	<div class="opacity-50 text-sm mb-1">
+		<a href={'/' + parentPath}>{parentPath.split('/').join(' > ') || tenant}</a>
+	</div>
 
-	<h2 class="text-3xl">
+	<h2 class="leading-0 break-all mb-3">
 		{#if active.icon}<i class="fal fa-{active.icon.value} opacity-50 mr-2" />{/if}
-		{active.label ? active.label.value : $activeNodeStore}
+		{active.label ? active.label.value : endPath}
 	</h2>
-
-	<div class="opacity-50 text-xs mb-3">{$activeNodeStore}</div>
 
 	<!-- form class="mb-3" on:submit|preventDefault>
 		<div class="relative">
@@ -226,10 +272,6 @@
 			/>
 		</div>
 	</form -->
-
-	<Login />
-
-	<h2 class="my-3 uppercase opacity-50">Attributes</h2>
 
 	<form on:submit|preventDefault>
 		<div class="grid grid-cols-12 gap-3 mb-2">
@@ -274,6 +316,9 @@
 		on:valueChanged={attributeChanged}
 		on:removeAttribute={removeAttribute}
 	/>
+
+	<Login />
+
 	<!--
 	{#each $edgesStore.filter((d) => d.source === $activeNodeStore) as item}
 		<div class="grid mb-2">

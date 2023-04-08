@@ -19,9 +19,9 @@
 	export let readonly = false;
 	export let disableDelete = true;
 
-	export let containerClasses = 'mb-2 grid grid-cols-12 gap-3 text-sm';
-	export let labelClasses = 'col-span-4 pt-1 opacity-50';
-	export let inputClasses = 'col-span-8 w-full py-1 px-2 outline-none rounded bg-slate-600';
+	export let containerClasses = 'mb-2 flex text-xs';
+	export let labelClasses = 'w-1/3 pt-1 opacity-50 break-all pr-2';
+	export let inputClasses = 'w-2/3 py-1 px-2 outline-none rounded bg-slate-600 break-all';
 
 	let canDelete = false;
 
@@ -55,7 +55,7 @@
 		on:change={change}
 	/>
 	{#if !disableDelete}
-		<Button ghost={true} on:buttonClick={remove}>
+		<Button ghost={true} on:buttonClick={remove} classNames="text-sm p-2 ml-1">
 			<i class="fal fa-times" />
 		</Button>
 	{/if}

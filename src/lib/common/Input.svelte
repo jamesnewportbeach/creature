@@ -188,12 +188,13 @@
 		disabled={disabled ? true : undefined}
 		{required}
 		class:mt-1={true}
-		on:keyup={change}
+		on:change={change}
 	/>
+	<div class="flex-grow" />
 {/if}
 
 {#if type === 'object'}
-	{value}
+	<div class={classNames}>{value}</div>
 {/if}
 
 {#if list}
