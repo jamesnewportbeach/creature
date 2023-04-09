@@ -18,6 +18,7 @@
 		statementB;
 
 	$: statementAId;
+	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
 	function init(el) {
 		el.focus();
@@ -45,6 +46,7 @@
 			//console.log(statementA);
 			console.log(statementB);
 			console.log(path + '/' + statementA);
+			console.log(tenant);
 
 			if (statementA && !statementB) {
 				const newId = nanoid(11);
@@ -70,7 +72,7 @@
 					return [...d, ...[{ id: newId, label: statementB }]];
 				});
 				*/
-				publicStore.create(path + '/' + statementA, statementB, (d) => {
+				publicStore.create($activeNodeStore + '/' + statementA, statementB, (d) => {
 					console.log(d);
 					value = '';
 					statementA = '';

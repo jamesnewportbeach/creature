@@ -9,6 +9,28 @@ export const usersStore = writable(null);
 
 export const PUBLIC_AREA = 'public';
 
+export const getPathName = (pathname) => {
+	const pageParts = pathname.split('/');
+	const p = pageParts.shift();
+	/*
+		const itemParts = item['#'].split('/');
+		const tenant = itemParts.shift();
+		const space = itemParts.shift();
+		*/
+	return pageParts.join('/');
+};
+export const getLocalPathName = (pathname) => {
+	const pageParts = pathname.split('/');
+	const p1 = pageParts.shift();
+	const p2 = pageParts.shift();
+	/*
+		const itemParts = item['#'].split('/');
+		const tenant = itemParts.shift();
+		const space = itemParts.shift();
+		*/
+	return pageParts.join('/');
+};
+
 const now = () => {
 	const now = new Date();
 	return now.getTime();
@@ -78,7 +100,7 @@ const handleLogin = (u, n, cb) => {
 		cb(n);
 	} else {
 		privateStore.update(null, u, () => {
-			publicStore.create(u.tenant + '/' + PUBLIC_USERS + '/' + n.sea.pub, u, () => {
+			publicStore.update(u.tenant + '/' + PUBLIC_USERS + '/' + n.sea.pub, u, () => {
 				u.pub = n.sea.pub;
 				userStore.set(u);
 				cb(n, u);
@@ -296,9 +318,8 @@ export const privateStore = customStore(gunUser.map(), {
 		});
 	},
 	logout: (pub, tenant, cb) => {
-		gunUser.leave().once(() => {
-			publicStore.delete(tenant + '/' + PUBLIC_USERS + '/' + pub, (d) => {
-				// console.log(d);
+		publicStore.update(tenant + '/' + PUBLIC_USERS + '/' + pub, { isLoggedIn: false }, (d) => {
+			gunUser.leave().once(() => {
 				userStore.set(null);
 				cb();
 			});
