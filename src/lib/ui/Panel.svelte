@@ -3,7 +3,7 @@
 	import { nanoid } from 'nanoid';
 	import { page } from '$app/stores';
 	import { activeNodeStore, edgesStore, nodesStore } from '$lib/stores/ui/app-store';
-	import { userStore, privateStore, publicStore } from '$lib/stores/gun/store';
+	import { userStore, privateStore, publicStore, attributesStore } from '$lib/stores/gun/store';
 	import Form from '$lib/common/Form.svelte';
 	import Login from '$lib/ui/Login.svelte';
 	import Tooltip from '$lib/common/Tooltip.svelte';
@@ -11,8 +11,10 @@
 	import Icon from '$lib/common/Icon.svelte';
 
 	import { formatPath } from '$lib/ui/utils';
+	import { now } from 'svelte/internal';
 
 	let value = '',
+		language = 'en',
 		statementA,
 		statementAId,
 		statementB;
@@ -72,12 +74,38 @@
 					return [...d, ...[{ id: newId, label: statementB }]];
 				});
 				*/
-				publicStore.create($activeNodeStore + '/' + statementA, statementB, (d) => {
-					console.log(d);
-					value = '';
-					statementA = '';
-					statementB = '';
-					statementAId = '';
+
+				const now = new Date();
+
+				publicStore.read('links/' + statementA).once((existingAttr) => {
+					if (existingAttr) {
+						console.log('existing');
+						console.log(existingAttr);
+
+						publicStore.create($activeNodeStore + '/' + statementA, statementB, (d) => {
+							console.log(d);
+							value = '';
+							statementA = '';
+							statementB = '';
+							statementAId = '';
+						});
+					} else {
+						// const newId = statementA.indexOf(':') > -1 nanoid(11);
+
+						publicStore.create(
+							'links/' + statementA + '/label/' + language,
+							statementA,
+							(newAttr) => {
+								publicStore.create($activeNodeStore + '/' + statementA, statementB, (d) => {
+									console.log(d);
+									value = '';
+									statementA = '';
+									statementB = '';
+									statementAId = '';
+								});
+							}
+						);
+					}
 				});
 
 				/*
@@ -98,7 +126,6 @@
 			publicStore.update($activeNodeStore, e.detail, (d) => {});
 		},
 		removeAttribute = (e) => {
-			console.log($activeNodeStore + '/' + e.detail.key);
 			publicStore.delete($activeNodeStore + '/' + e.detail.key, (d) => {});
 		},
 		change = (key) => {
@@ -127,22 +154,22 @@
 	$: isRoot = $page.url.pathname === '/';
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
-	const setPage = () => {
+	const setPage = (pathName) => {
 		if (tenant) {
-			const pathParts = $page.url.pathname.split('/');
+			const pathParts = pathName.split('/');
 			if (pathParts.length > 1) {
 				endPath = pathParts.pop();
 				const start = pathParts.shift();
 				parentPath = pathParts.join('/');
 			}
 
-			const f = tenant + '/' + $page.url.pathname.replace('/', '');
+			const f = tenant + '/' + pathName.replace('/', '');
 			activeNodeStore.set(f);
 		}
 	};
 
 	page.subscribe((p) => {
-		setPage();
+		setPage(p.url.pathname);
 		/*
 		path.split('/').forEach((data, i) => {
 			if (data) {
@@ -175,7 +202,13 @@
 	});
 
 	onMount(() => {
-		setPage();
+		setPage($page.url.pathname);
+
+		privateStore.read(tenant + '/attributes').subscribe((d) => {
+			console.log('ATTRS:::');
+			console.log(d);
+			//attributes = d;
+		});
 	});
 
 	const toDateString = (date) => {
@@ -257,9 +290,9 @@
 
 	<h2 class="leading-0 break-all mb-3">
 		{#if active.icon}<i class="fal fa-{active.icon.value} opacity-50 mr-2" />{/if}
-		{active.label ? active.label.value : endPath}
+		{active.label ? $page.url.pathname : endPath}
 	</h2>
-
+	{JSON.stringify(attributesStore)}
 	<!-- form class="mb-3" on:submit|preventDefault>
 		<div class="relative">
 			<div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">

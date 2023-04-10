@@ -41,12 +41,12 @@
 
 {#if label}
 	<label for={id} class={labelClasses}>
-		{label}
+		<a href="/attributes/{label}">{label}</a>
 	</label>
 {/if}
 
 {#if type === 'text' || type === 'string' || type === 'text-i18n'}
-	{#if value?.length > 50}
+	{#if value.length > 100}
 		<textarea
 			list={id + '-list'}
 			{id}
