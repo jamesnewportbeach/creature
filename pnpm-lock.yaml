@@ -22,6 +22,7 @@ specifiers:
   prettier-plugin-svelte: ^2.8.1
   svelte: ^3.54.0
   svelte-check: ^3.1.4
+  svelte-select: ^5.6.0
   tailwindcss: ^3.3.1
   three: latest
   three-mesh-ui: ^6.4.4
@@ -55,6 +56,7 @@ devDependencies:
   prettier-plugin-svelte: 2.10.0_ur5pqdgn24bclu6l6i7qojopk4
   svelte: 3.58.0
   svelte-check: 3.1.4_hr6j3rdz3345ss7d3smrgfivne
+  svelte-select: 5.6.0
   tailwindcss: 3.3.1
   three: 0.151.3
   three-mesh-ui: 6.5.4_three@0.151.3
@@ -546,6 +548,16 @@ packages:
   /@eslint/js/8.37.0:
     resolution: {integrity: sha512-x5vzdtOOGgFVDCUs81QRB2+liax8rFg3+7hqM+QhBG0/G3F1ZsoYl97UrqgHgQ9KKT7G6c4V+aTUCgu/n22v1A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: true
+
+  /@floating-ui/core/1.2.6:
+    resolution: {integrity: sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==}
+    dev: true
+
+  /@floating-ui/dom/1.2.6:
+    resolution: {integrity: sha512-02vxFDuvuVPs22iJICacezYJyf7zwwOCWkPNkWNBr1U0Qt1cKFYzWvxts0AmqcOQGwt/3KJWcWIgtbUU38keyw==}
+    dependencies:
+      '@floating-ui/core': 1.2.6
     dev: true
 
   /@fontsource/fira-mono/4.5.10:
@@ -2738,6 +2750,13 @@ packages:
       - sugarss
     dev: true
 
+  /svelte-floating-ui/1.2.8:
+    resolution: {integrity: sha512-8Ifi5CD2Ui7FX7NjJRmutFtXjrB8T/FMNoS2H8P81t5LHK4I9G4NIs007rLWG/nRl7y+zJUXa3tWuTjYXw/O5A==}
+    dependencies:
+      '@floating-ui/core': 1.2.6
+      '@floating-ui/dom': 1.2.6
+    dev: true
+
   /svelte-hmr/0.15.1_svelte@3.58.0:
     resolution: {integrity: sha512-BiKB4RZ8YSwRKCNVdNxK/GfY+r4Kjgp9jCLEy0DuqAKfmQtpL38cQK3afdpjw4sqSs4PLi3jIPJIFp259NkZtA==}
     engines: {node: ^12.20 || ^14.13.1 || >= 16}
@@ -2793,6 +2812,13 @@ packages:
       strip-indent: 3.0.0
       svelte: 3.58.0
       typescript: 4.9.5
+    dev: true
+
+  /svelte-select/5.6.0:
+    resolution: {integrity: sha512-+EDXupp3Lr/hKlXNra1vR1VEGxEEsFxYPs5yDDqQE+xagyAOd8P54IJtU84Z5QN3HYc8l2Hp+tNCCYZoTWWxyQ==}
+    dependencies:
+      '@floating-ui/dom': 1.2.6
+      svelte-floating-ui: 1.2.8
     dev: true
 
   /svelte/3.58.0:

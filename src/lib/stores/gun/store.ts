@@ -6,8 +6,9 @@ import { writable } from 'svelte/store';
 
 export const userStore = writable(null);
 export const usersStore = writable(null);
+export const attributesStore = writable({});
 
-export const PUBLIC_AREA = 'public';
+export const PUBLIC_AREA = 'tenants';
 
 export const getPathName = (pathname) => {
 	const pageParts = pathname.split('/');
@@ -93,8 +94,7 @@ export const gunUser = gun.user().recall({
 });
 
 const PUBLIC_USERS = 'users',
-	publicSpace = gun.get(PUBLIC_AREA),
-	attributesSpace = gun.get('attributes');
+	publicSpace = gun.get(PUBLIC_AREA);
 
 const handleLogin = (u, n, cb) => {
 	if (n.err) {
@@ -252,16 +252,6 @@ const common = {
 		});
 	}
 };
-
-export const attributesStore = customStore(attributesSpace.map(), {
-	assert: (data, lang, cb) => common.assert(data, lang, cb),
-	create: (id, data, cb) => common.create(id, data, cb, attributesSpace),
-	read: (id) => common.read(id, attributesSpace),
-	save: (id, data, nStore) => common.save(id, data, attributesSpace, nStore),
-	update: (id, data, cb) => common.update(id, data, cb, attributesSpace),
-	upload: (id, data, cb) => common.upload(id, data, cb, attributesSpace),
-	delete: (id, cb) => common.delete(id, cb, attributesSpace)
-});
 
 export const publicStore = customStore(publicSpace.map(), {
 	createWithLabel: (id, lang, label, cb) => {

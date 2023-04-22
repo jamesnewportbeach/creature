@@ -11,18 +11,18 @@
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
 	let formDataLogin = {
-			alias: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },
+			email: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },
 			password: { label: 'Password', type: 'password', value: 'Appleisdumb1' }
 		},
 		formDataRegister = {
-			first_name: { label: 'First Name', type: 'text', value: null },
-			last_name: { label: 'Last Name', type: 'text', value: null },
-			alias: { label: 'Email', type: 'email', value: null },
+			'first-name': { label: 'First Name', type: 'text', value: null },
+			'last-name': { label: 'Last Name', type: 'text', value: null },
+			email: { label: 'Email', type: 'email', value: null },
 			password: { label: 'Password', type: 'password', value: null }
 		};
 
 	const signIn = () => {
-			privateStore.login(formDataLogin.alias.value, formDataLogin.password.value, tenant, (res) => {
+			privateStore.login(formDataLogin.email.value, formDataLogin.password.value, tenant, (res) => {
 				// console.log(res);
 			});
 		},
@@ -30,9 +30,9 @@
 			const d = e.detail;
 			privateStore.register(
 				{
-					first_name: formDataRegister.first_name.value,
-					last_name: formDataRegister.last_name.value,
-					alias: formDataRegister.alias.value,
+					first_name: formDataRegister['first-name'].value,
+					last_name: formDataRegister['last-name'].value,
+					alias: formDataRegister.email.value,
 					password: formDataRegister.password.value,
 					tenant
 				},

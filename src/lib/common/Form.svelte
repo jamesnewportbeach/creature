@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { t } from '$lib/stores/translations/i18n';
 	import Field from '$lib/common/Field.svelte';
+	import { attributesStore } from '$lib/stores/gun/store';
 
 	export let data = {};
 	export let disableDelete = true;
@@ -37,7 +38,7 @@
 	{#each Object.entries(data) as [key, value], index (key)}
 		<Field
 			id={key}
-			label={value.label}
+			label={$attributesStore['tenants/links2/' + key]?.label || key}
 			type={value.type}
 			{disableDelete}
 			disabled={value.disabled}
