@@ -155,6 +155,7 @@
 	/>
 {/if}
 {#if type === 'range'}
+	<span class="items-center justify-center">{value}</span>
 	<input
 		type="range"
 		{id}

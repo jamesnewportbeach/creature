@@ -3,6 +3,9 @@
 	import { activeNodeStore } from '$lib/stores/ui/app-store';
 	import { publicStore, attributesStore } from '$lib/stores/gun/store';
 	import Select from 'svelte-select';
+	import { nanoid } from 'nanoid';
+
+	const newId = nanoid(11);
 
 	let attributesLocation = 'links2',
 		filterText = '',
@@ -63,6 +66,7 @@
 			statementB = null;
 			if (statementBTextarea) statementBTextarea.value = '';
 			if (statementBInput) statementBInput.value = '';
+			attributeType = { ...attributeTypes[0] };
 		},
 		submit = () => {
 			if (statementA && statementB) {
@@ -71,8 +75,11 @@
 
 					const predicate = statementA.value.replaceAll(' ', '-').toLowerCase();
 
+					const now = new Date();
+
 					const o = {
-						type: attributeType.value
+						type: attributeType.value,
+						'created-at': now.getTime()
 					};
 					o['label@' + language] = statementA.label;
 
@@ -93,10 +100,12 @@
 			}
 		};
 
-	$: attributes = Object.entries($attributesStore).map((d) => {
-		d[1].value = d[0];
-		return d[1];
-	});
+	$: attributes = Object.entries($attributesStore)
+		.map((d) => {
+			d[1].value = d[0];
+			return d[1];
+		})
+		.sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
 
 	onMount(() => {
 		publicStore
@@ -118,13 +127,21 @@
 	});
 </script>
 
-<form on:submit|preventDefault class="grid grid-cols-12 gap-3 mb-2 text-xs" autocomplete="off">
+<form
+	on:submit|preventDefault
+	class="grid grid-cols-12 gap-3 mb-2 text-xs"
+	autocomplete="chrome-off"
+>
 	<div class="col-span-4 styled">
 		<Select
 			on:change={handleChange}
 			on:filter={handleFilter}
 			bind:filterText
-			inputAttributes={{ autocomplete: 'off' }}
+			inputAttributes={{
+				autocomplete: 'chrome-off',
+				'aria-autocomplete': 'chrome-off',
+				name: newId + 'predicate'
+			}}
 			items={attributes}
 			hideEmptyState={true}
 			bind:value={statementA}
@@ -136,7 +153,13 @@
 	</div>
 
 	<div class="col-span-2 styled">
-		<Select items={attributeTypes} bind:value={attributeType} clearable={false} />
+		<Select
+			disabled={statementA?.value !== statementA?.label}
+			items={attributeTypes}
+			inputAttributes={{ autocomplete: 'chrome-off', name: newId + 'attributeType' }}
+			bind:value={attributeType}
+			clearable={false}
+		/>
 	</div>
 
 	<div class="col-span-5">
@@ -164,22 +187,32 @@
 	</div>
 
 	<div class="col-span-1">
-		<button type="button" on:click={(e) => submit()} class="uppercase text-sm"
-			><i class="fas fa-plus mr-1" />Add</button
+		<button
+			disabled={!statementA || !statementB}
+			type="button"
+			on:click={(e) => submit()}
+			class="uppercase text-sm"><i class="fas fa-plus mr-1" />Add</button
 		>
 	</div>
 </form>
 
 <style>
+	button[disabled] {
+		cursor: not-allowed;
+	}
 	.styled {
 		--font-size: 11px;
 		--item-padding: 0;
 		--item-hover-bg: #333;
-		--item-padding: 0 8px;
+		--item-padding: 0 10px;
+		--selected-item-padding: 0 0px;
 		--border: solid 1px rgba(255, 255, 255, 0.1);
+		--disabled-border-color: rgba(255, 255, 255, 0.1);
+		--disabled-color: rgba(255, 255, 255, 0.5);
 		--height: 32px;
 		--padding: 0 8px;
 		--background: transparent;
+		--disabled-background: transparent;
 		--input-color: inherit;
 		--input-padding: inherit;
 		--list-background: #000;

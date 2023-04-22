@@ -2,20 +2,16 @@
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
-	export let type = 'button';
 	export let classNames = '';
 	export let ghost = false;
 	export let disabled = false;
-	export let selected = false;
 
-	function click(e) {
-		// console.log('clicking....');
+	function click() {
 		dispatch('buttonClick', {});
 	}
 </script>
 
 <button
-	class:btn={true}
 	class:btn-ghost={ghost}
 	type="button"
 	{disabled}
@@ -24,3 +20,10 @@
 >
 	<slot />
 </button>
+
+<style>
+	button {
+		border-radius: 10px;
+		padding: 5px;
+	}
+</style>
