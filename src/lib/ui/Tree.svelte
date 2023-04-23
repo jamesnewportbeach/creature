@@ -1,4 +1,5 @@
 <script>
+	import { nanoid } from 'nanoid';
 	import { attributesStore, userStore, gun } from '$lib/stores/gun/store';
 	import User from './User.svelte';
 	import { page } from '$app/stores';
@@ -13,6 +14,7 @@
 
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 	$: data;
+	$: children = Object.entries(data).filter(([_, v]) => v !== null && _ !== '_');
 
 	$: {
 		key = path.split('/').pop();
@@ -24,8 +26,17 @@
 	}
 
 	const toggleExpanded = () => {
-		expanded = !expanded;
-	};
+			expanded = !expanded;
+		},
+		addNew = () => {
+			const newId = nanoid(11);
+			const now = new Date();
+			if (!expanded) expanded = true;
+			gun
+				.path(path.split('/'))
+				.get(newId)
+				.put({}, () => {});
+		};
 </script>
 
 {#if (data && $attributesStore['tenants/links2/' + key]?.type === undefined) || $attributesStore['tenants/links2/' + key]?.type === 'object'}
@@ -33,7 +44,7 @@
 		{#if path.indexOf('tenants/' + tenant + '/users/') === 0 && path.split('/').length === 4}
 			<User id={path} />
 		{:else}
-			<button on:click={() => toggleExpanded()}>
+			<button on:click={() => toggleExpanded()} class:invisible={children.length === 0}>
 				<i class="fal mr-2" class:fa-chevron-right={!expanded} class:fa-chevron-down={expanded} />
 			</button>
 
@@ -49,17 +60,27 @@
 						(key === $userStore?.pub ? $userStore?.alias : key)}</a
 				>
 			{/if}
+
+			{#if children.length > 0}
+				<span class="ml-2">({children.length})</span>
+			{/if}
 		{/if}
 
 		<span class="flex-1" />
 
-		<button on:click={(e) => gun.path(path.split('/')).put(null)} class="ml-3">
-			<i class="fal fa-trash" />
+		{#if !root}
+			<button on:click={(e) => gun.path(path.split('/')).put(null)} class="ml-3">
+				<i class="fal fa-trash" />
+			</button>
+		{/if}
+
+		<button on:click={(e) => addNew()} class="ml-3">
+			<i class="fal fa-plus" />
 		</button>
 	</div>
 	{#if expanded}
 		<ul class="pl-3">
-			{#each Object.entries(data).filter(([_, v]) => v != null) as [key, value], index (key)}
+			{#each children as [key, value], index (key)}
 				<li class="flex w-full flex-col">
 					<svelte:self root={false} path={path + '/' + key} />
 				</li>
