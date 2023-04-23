@@ -13,9 +13,13 @@
 	onMount(() => {
 		if (userId && id) {
 			publicStore.read(userId).on((d) => {
-				delete d._;
-				d.id = userId;
-				user = d;
+				if (d) {
+					delete d._;
+					d.id = userId;
+					user = d;
+				} else {
+					user = {};
+				}
 			});
 		}
 	});

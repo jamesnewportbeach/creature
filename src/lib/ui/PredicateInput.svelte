@@ -128,7 +128,6 @@
 	</div>
 
 	<Button
-		type="submit"
 		classNames="ml-5 text-xl opacity-50 hover:opacity-100"
 		disabled={!newPredicate || !newValue}
 		on:click={addPredicate}><i class="fas fa-save" /></Button

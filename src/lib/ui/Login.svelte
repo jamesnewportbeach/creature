@@ -57,7 +57,7 @@
 						isLogin = false;
 					}}>Not a member? Sign up FREE</a
 				>
-				<Button classNames="inline-block" type="button" on:buttonClick={signIn}>Log in</Button>
+				<Button classNames="inline-block" on:buttonClick={signIn}>Log in</Button>
 			</div>
 		</Form>
 	{:else}
@@ -70,7 +70,7 @@
 						isLogin = true;
 					}}>Already a member? Login</a
 				>
-				<Button classNames="inline-block" type="button" on:buttonClick={register}>Sign up</Button>
+				<Button classNames="inline-block" on:buttonClick={register}>Sign up</Button>
 			</div>
 		</Form>
 	{/if}

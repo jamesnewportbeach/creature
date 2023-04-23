@@ -4,6 +4,10 @@
 	import { publicStore, attributesStore } from '$lib/stores/gun/store';
 	import Select from 'svelte-select';
 	import { nanoid } from 'nanoid';
+	import Tree from './Tree.svelte';
+	import { page } from '$app/stores';
+
+	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
 	const newId = nanoid(11);
 
@@ -19,16 +23,18 @@
 
 	const attributeTypes = [
 		{ value: 'text', label: 'Text' },
+		{ value: 'object', label: 'Object' },
 		{ value: 'number', label: 'Number' },
 		{ value: 'color', label: 'Color' },
-		{ value: 'range', label: 'Range' },
-		{ value: 'date', label: 'Date' },
-		{ value: 'time', label: 'Time' },
-		{ value: 'datetime-local', label: 'Date & Time' },
-		{ value: 'week', label: 'Week' },
 		{ value: 'email', label: 'Email' },
 		{ value: 'tel', label: 'Phone' },
+		{ value: 'date', label: 'Date' },
+		{ value: 'datetime-local', label: 'Date & Time' },
+		{ value: 'time', label: 'Time' },
+		{ value: 'week', label: 'Week' },
+		{ value: 'month', label: 'Month' },
 		{ value: 'url', label: 'Url' },
+		{ value: 'range', label: 'Range' },
 		{ value: 'password', label: 'Password' },
 		{ value: 'checkbox', label: 'Checkbox' }
 	];
@@ -163,7 +169,7 @@
 	</div>
 
 	<div class="col-span-5">
-		{#if attributeType}
+		{#if attributeType && attributeType?.value !== 'object'}
 			{#if attributeType.value === 'text'}
 				<textarea
 					placeholder={'Value'}
@@ -183,6 +189,10 @@
 					on:input={addForm}
 				/>
 			{/if}
+		{/if}
+
+		{#if attributeType && attributeType?.value === 'object'}
+			<Tree path={'tenants/' + tenant} />
 		{/if}
 	</div>
 

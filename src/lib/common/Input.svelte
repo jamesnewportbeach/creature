@@ -191,7 +191,6 @@
 		class:mt-1={true}
 		on:change={change}
 	/>
-	<div class="flex-grow" />
 {/if}
 
 {#if type === 'object'}

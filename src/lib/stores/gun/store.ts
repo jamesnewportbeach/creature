@@ -7,6 +7,7 @@ import { writable } from 'svelte/store';
 export const userStore = writable(null);
 export const usersStore = writable(null);
 export const attributesStore = writable({});
+export const nodesStore = writable({});
 
 export const PUBLIC_AREA = 'tenants';
 
@@ -47,7 +48,7 @@ const getPeers = () => {
 	}
 };
 
-const customStore = (ref, methods = {}) => {
+export const customStore = (ref, methods = {}) => {
 	let store = {};
 	const subscribers = [];
 
@@ -110,7 +111,7 @@ const handleLogin = (u, n, cb) => {
 	}
 };
 
-const findPath = (id, store) => {
+export const findPath = (id, store) => {
 	if (id) {
 		const pathParts = id.split('/');
 		//const root = pathParts.shift();
