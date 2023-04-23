@@ -35,7 +35,7 @@
 				<i class="fal mr-2" class:fa-chevron-right={!expanded} class:fa-chevron-down={expanded} />
 			</button>
 
-			<a href={path.replace('tenants/' + tenant + '/', '/')}
+			<a href={path.replace('tenants/' + tenant, '')}
 				>{$attributesStore['tenants/links2/' + key]?.label ||
 					(key === $userStore?.pub ? $userStore?.alias : key)}</a
 			>

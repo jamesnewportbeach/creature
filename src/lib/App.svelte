@@ -7,6 +7,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import Users from './ui/Users.svelte';
 	import Tree from './ui/Tree.svelte';
+	import Breadcrumbs from './ui/Breadcrumbs.svelte';
 
 	const logout = () => {
 		if ($userStore) privateStore.logout($userStore.pub, tenant, () => {});
@@ -15,7 +16,7 @@
 	let activePath = '';
 
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
-	$: activePath = 'tenants/' + tenant + $page.url.pathname;
+	$: activePath = 'tenants/' + tenant + ($page.url.pathname === '/' ? '' : $page.url.pathname);
 
 	onMount(() => {
 		publicStore.read(tenant + '/users').on((d) => {
@@ -38,10 +39,13 @@
 </svelte:head>
 
 <div class="flex grow text-white h-full">
-	<div class="flex-none w-1/2 h-full bg-slate-600">
+	<div class="flex-none w-1/2 h-full bg-slate-600 p-3">
 		<Users />
 		<!-- MindMap / -->
-		{activePath}
+
+		<Breadcrumbs path={activePath} />
+		<br />
+
 		<Tree path={activePath} />
 	</div>
 	<div class="flex-initial w-1/2 h-full bg-slate-800 z-10 overflow-y-auto">
