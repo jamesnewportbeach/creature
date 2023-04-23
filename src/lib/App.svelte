@@ -6,25 +6,27 @@
 	import { userStore, usersStore, privateStore, publicStore } from '$lib/stores/gun/store';
 	import { onMount, onDestroy } from 'svelte';
 	import Users from './ui/Users.svelte';
-
-	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
+	import Tree from './ui/Tree.svelte';
 
 	const logout = () => {
 		if ($userStore) privateStore.logout($userStore.pub, tenant, () => {});
 	};
 
+	let activePath = '';
+
+	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
+	$: activePath = 'tenants/' + tenant + $page.url.pathname;
+
 	onMount(() => {
-		if (tenant) {
-			publicStore.read(tenant + '/users').on((d) => {
-				if (d) {
-					let o = Object.fromEntries(Object.entries(d).filter(([_, v]) => v != null && _ !== '_'));
-					usersStore.set(o);
-					if ($userStore && !($userStore.pub in $usersStore)) {
-						logout();
-					}
+		publicStore.read(tenant + '/users').on((d) => {
+			if (d) {
+				let o = Object.fromEntries(Object.entries(d).filter(([_, v]) => v != null && _ !== '_'));
+				usersStore.set(o);
+				if ($userStore && !($userStore.pub in $usersStore)) {
+					logout();
 				}
-			});
-		}
+			}
+		});
 	});
 </script>
 
@@ -39,6 +41,8 @@
 	<div class="flex-none w-1/2 h-full bg-slate-600">
 		<Users />
 		<!-- MindMap / -->
+		{activePath}
+		<Tree path={activePath} />
 	</div>
 	<div class="flex-initial w-1/2 h-full bg-slate-800 z-10 overflow-y-auto">
 		<Panel />
