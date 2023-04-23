@@ -21,10 +21,8 @@
 	}
 </script>
 
-<div class="flex items-center">
-	<a href="/" class="mr-2">{tenant}</a> <span class="opacity-50">&gt;</span>
+<a href="/" class="mr-2">{tenant}</a> <span class="opacity-50 mr-2">&gt;</span>
 
-	{#each items as item}
-		<a href={item.path} class="mx-2">{item.key}</a> <span class="opacity-50">&gt;</span>
-	{/each}
-</div>
+{#each items as item}
+	<a href={item.path} class="mr-2">{item.key}</a> <span class="opacity-50 mr-2">&gt;</span>
+{/each}

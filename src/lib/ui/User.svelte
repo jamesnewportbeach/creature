@@ -1,5 +1,5 @@
 <script>
-	import { publicStore, getLocalPathName, getPathName } from '$lib/stores/gun/store';
+	import { publicStore, getLocalPathName, getPathName, userStore } from '$lib/stores/gun/store';
 	import { onMount } from 'svelte';
 
 	export let id = '';
@@ -16,6 +16,10 @@
 				if (d) {
 					delete d._;
 					d.id = userId;
+					const idParts = userId.split('/');
+					const pub = idParts.pop();
+
+					d.pub = pub;
 					user = d;
 				} else {
 					user = {};
@@ -30,3 +34,6 @@
 	class:text-green-500={user.isLoggedIn}
 	class:opacity-50={!user.isLoggedIn}
 /><a href={'/' + url} class:opacity-50={!user.isLoggedIn}>{user.label ? user.label : user.alias}</a>
+{#if user.pub === $userStore?.pub}
+	<span class="ml-2 opacity-50">(Me)</span>
+{/if}
