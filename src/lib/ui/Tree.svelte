@@ -48,32 +48,32 @@
 
 {#if (data && $attributesStore['tenants/links2/' + key]?.type === undefined) || $attributesStore['tenants/links2/' + key]?.type === 'object'}
 	<div class="flex w-full py-1 rounded-lg px-2 hover:bg-black/50">
-		{#if path.indexOf('tenants/' + tenant + '/users/') === 0 && path.split('/').length === 4}
-			<User id={path} />
-		{:else}
-			<button on:click={() => toggleExpanded()} class:invisible={children.length === 0}>
-				<i class="fal mr-2" class:fa-chevron-right={!expanded} class:fa-chevron-down={expanded} />
-			</button>
+		<button on:click={() => toggleExpanded()} class:invisible={children.length === 0}>
+			<i class="fal mr-2" class:fa-chevron-right={!expanded} class:fa-chevron-down={expanded} />
+		</button>
 
-			{#if root}
-				{#if path !== 'tenants/' + tenant}
-					<Breadcrumbs {path} />
-				{/if}
-				<span contenteditable="true" class="outline-none"
-					>{$attributesStore['tenants/links2/' + key]?.label ||
-						(key === $userStore?.pub ? $userStore?.alias : key)}</span
-				>
+		{#if root}
+			{#if path !== 'tenants/' + tenant}
+				<Breadcrumbs {path} />
+			{/if}
+			<span contenteditable="true" class="outline-none"
+				>{$attributesStore['tenants/links2/' + key]?.label ||
+					(key === $userStore?.pub ? $userStore?.alias : key)}</span
+			>
+		{:else}
+			{#if path.indexOf('tenants/' + tenant + '/users/') === 0 && path.split('/').length === 4}
+				<User id={path} />
 			{:else}
 				<span contenteditable="true" class="outline-none">
 					{$attributesStore['tenants/links2/' + key]?.label ||
 						(key === $userStore?.pub ? $userStore?.alias : key)}
 				</span>
-				<a href={path.replace('tenants/' + tenant, '')} class="ml-2"><i class="fal fa-link" /></a>
 			{/if}
+			<a href={path.replace('tenants/' + tenant, '')} class="ml-2"><i class="fal fa-link" /></a>
+		{/if}
 
-			{#if children.length > 0}
-				<span class="ml-2">({children.length})</span>
-			{/if}
+		{#if children.length > 0}
+			<span class="ml-2">({children.length})</span>
 		{/if}
 
 		<span class="flex-1" />

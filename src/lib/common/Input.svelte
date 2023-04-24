@@ -46,7 +46,7 @@
 {/if}
 
 {#if type === 'text' || type === 'string' || type === 'text-i18n'}
-	{#if value.length > 100}
+	{#if value?.length > 100}
 		<textarea
 			list={id + '-list'}
 			{id}

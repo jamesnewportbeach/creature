@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+
 	export let path = '';
 
 	let items = [];
