@@ -39,7 +39,7 @@
 		<Field
 			id={key}
 			label={$attributesStore['tenants/links2/' + key]?.label || key}
-			type={$attributesStore['tenants/links2/' + key]?.type || 'text'}
+			type={$attributesStore['tenants/links2/' + key]?.type}
 			{disableDelete}
 			disabled={value.disabled}
 			required={value.required}

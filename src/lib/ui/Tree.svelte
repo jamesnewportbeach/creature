@@ -10,11 +10,14 @@
 	export let root = true;
 
 	let key = '',
-		data = {};
+		data = {},
+		isEditMode = false;
 
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 	$: data;
-	$: children = Object.entries(data).filter(([_, v]) => v !== null && _ !== '_');
+	$: children = Object.entries(data).filter(
+		([_, v]) => v !== null && typeof v === 'object' && _ !== '_'
+	);
 
 	$: {
 		key = path.split('/').pop();
@@ -28,6 +31,9 @@
 	const toggleExpanded = () => {
 			expanded = !expanded;
 		},
+		edit = () => {
+			isEditMode = true;
+		},
 		addNew = () => {
 			const newId = nanoid(11);
 			const now = new Date();
@@ -35,12 +41,13 @@
 			gun
 				.path(path.split('/'))
 				.get(newId)
-				.put({}, () => {});
+				.get('date-created')
+				.put(now.getTime(), () => {});
 		};
 </script>
 
 {#if (data && $attributesStore['tenants/links2/' + key]?.type === undefined) || $attributesStore['tenants/links2/' + key]?.type === 'object'}
-	<div class="flex w-full py-1">
+	<div class="flex w-full py-1 rounded-lg px-2 hover:bg-black/50">
 		{#if path.indexOf('tenants/' + tenant + '/users/') === 0 && path.split('/').length === 4}
 			<User id={path} />
 		{:else}
@@ -52,13 +59,16 @@
 				{#if path !== 'tenants/' + tenant}
 					<Breadcrumbs {path} />
 				{/if}
-				{$attributesStore['tenants/links2/' + key]?.label ||
-					(key === $userStore?.pub ? $userStore?.alias : key)}
-			{:else}
-				<a href={path.replace('tenants/' + tenant, '')}
+				<span contenteditable="true" class="outline-none"
 					>{$attributesStore['tenants/links2/' + key]?.label ||
-						(key === $userStore?.pub ? $userStore?.alias : key)}</a
+						(key === $userStore?.pub ? $userStore?.alias : key)}</span
 				>
+			{:else}
+				<span contenteditable="true" class="outline-none">
+					{$attributesStore['tenants/links2/' + key]?.label ||
+						(key === $userStore?.pub ? $userStore?.alias : key)}
+				</span>
+				<a href={path.replace('tenants/' + tenant, '')} class="ml-2"><i class="fal fa-link" /></a>
 			{/if}
 
 			{#if children.length > 0}
@@ -74,6 +84,9 @@
 			</button>
 		{/if}
 
+		<button on:click={(e) => edit()} class="ml-3">
+			<i class="fal fa-edit" />
+		</button>
 		<button on:click={(e) => addNew()} class="ml-3">
 			<i class="fal fa-plus" />
 		</button>

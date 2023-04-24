@@ -28,7 +28,19 @@
 
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
-	let canDelete = false;
+	let canDelete = false,
+		localValue;
+
+	$: {
+		if (value) {
+			const dateTypes = ['datetime-local', 'date', 'time', 'week', 'month'];
+			if (dateTypes.indexOf(type) > -1) {
+				localValue = formatDate(value);
+			} else {
+				localValue = value;
+			}
+		}
+	}
 
 	const change = (e) => {
 			let o = {};
@@ -43,6 +55,15 @@
 			const tenant = pathParts.shift();
 			const tenants = pathParts.shift();
 			goto(pathParts.join('/'));
+		},
+		formatDate = (d) => {
+			const now = new Date(d);
+			if (now.getMonth()) {
+				now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+				return now.toISOString().slice(0, 16);
+			} else {
+				return '';
+			}
 		};
 </script>
 
@@ -55,14 +76,17 @@
 		{#if value['#'].indexOf('tenants/' + tenant + '/users/') === 0 && value['#'].split('/').length === 4}
 			<User id={value['#']} />
 		{:else}
-			<button on:click={() => linkTo(value['#'])}>OBJECT - {value['#']}</button>
+			<button
+				on:click={() => linkTo(value['#'])}
+				class="btn-ghost break-all text-left rounded-lg px-2 py-1">{value['#']}</button
+			>
 		{/if}
 	{:else}
 		<Input
 			{type}
 			{label}
 			{id}
-			bind:value
+			value={localValue}
 			{placeholder}
 			{readonly}
 			{disabled}

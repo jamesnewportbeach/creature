@@ -12,6 +12,12 @@
 
 	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
 
+	const datetimeLocal = (datetime) => {
+		const dt = new Date(datetime);
+		dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+		return dt.toISOString().slice(0, 16);
+	};
+
 	const signOut = () => {
 			if ($userStore) privateStore.logout($userStore.pub, tenant);
 		},
@@ -63,7 +69,18 @@
 									newActive[key] = { type: 'object', label: key, value: d[key]['#'] };
 								} else {
 									let newItem = { label: key, value: d[key], type: t };
-									newActive[key] = newItem;
+
+									if (
+										t === 'datetime-local' ||
+										t === 'date' ||
+										t === 'time' ||
+										t === 'month' ||
+										t === 'week'
+									) {
+										newActive[key] = datetimeLocal(newItem);
+									} else {
+										newActive[key] = newItem;
+									}
 								}
 							}
 						}
