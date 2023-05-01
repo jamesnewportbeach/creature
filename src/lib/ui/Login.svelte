@@ -8,7 +8,7 @@
 	$: isLogin = true;
 	$: isError = false;
 	$: errorText = '';
-	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
+	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : '';
 
 	let formDataLogin = {
 			email: { label: 'Email', type: 'email', value: 'bostondevin@hotmail.com' },

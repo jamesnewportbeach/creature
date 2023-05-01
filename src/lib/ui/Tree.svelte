@@ -53,7 +53,10 @@
 		};
 </script>
 
-<div class="flex w-full py-1 rounded-lg px-2 hover:bg-black/50">
+<div
+	class="flex w-full py-1 rounded-lg px-2 hover:bg-black/25"
+	class:bg-black={path === $activeNodeStore}
+>
 	<button on:click={() => toggleExpanded()} class:invisible={children.length === 0}>
 		<i class="fal mr-2" class:fa-chevron-right={!expanded} class:fa-chevron-down={expanded} />
 	</button>

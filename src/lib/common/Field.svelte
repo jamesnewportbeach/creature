@@ -1,10 +1,10 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { userStore, gun, publicStore, languageStore } from '$lib/stores/gun/store';
 	import { goto } from '$app/navigation';
 	import Input from '$lib/common/Input.svelte';
 	import Button from '$lib/common/Button.svelte';
 	import Icon from './Icon.svelte';
-	import { page } from '$app/stores';
 	import User from '$lib/ui/User.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -13,7 +13,6 @@
 	export let list = '';
 	export let placeholder = '';
 
-	let type = 'text';
 	export let id = '';
 
 	export let disabled = false;
@@ -25,10 +24,14 @@
 	export let labelClasses = 'w-1/3 pt-1 opacity-50 break-all pr-2';
 	export let inputClasses = 'w-2/3 py-1 px-2 outline-none rounded bg-slate-600 break-all';
 
-	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
-
 	let canDelete = false,
-		localValue;
+		localValue,
+		data = {},
+		label = '',
+		type = 'text';
+
+	$: data;
+	$: label;
 
 	$: {
 		if (value) {
@@ -39,11 +42,21 @@
 				localValue = value;
 			}
 		}
+
+		gun
+			.get('public')
+			.get('properties')
+			.get(id)
+			.once((d) => {
+				data = d;
+				label = (d && d['label@' + $languageStore]) || id;
+				type = (d && d['input-type']) || 'text';
+			});
 	}
 
 	const change = (e) => {
 			let o = {};
-			o[id] = value;
+			o[id] = e.detail.value;
 			dispatch('change', o);
 		},
 		remove = (e) => {
@@ -77,7 +90,7 @@
 		{:else}
 			<button
 				on:click={() => linkTo(value['#'])}
-				class="btn-ghost break-all text-left rounded-lg px-2 py-1">{value['#']}</button
+				class="btn-ghost break-all text-left rounded-lg px-2 py-1">{id}</button
 			>
 		{/if}
 	{:else}
@@ -85,6 +98,7 @@
 			{type}
 			{id}
 			value={localValue}
+			{label}
 			{placeholder}
 			{readonly}
 			{disabled}
@@ -96,9 +110,8 @@
 		/>
 	{/if}
 
-	<div class="flex-grow" />
-
 	{#if !disableDelete}
+		<div class="flex-grow" />
 		<Button ghost={true} on:buttonClick={remove} classNames="text-sm p-2 ml-1">
 			<i class="fal fa-times" />
 		</Button>

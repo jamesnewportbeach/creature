@@ -12,6 +12,7 @@
 
 	export let type = 'text';
 	export let id = '';
+	export let label = '';
 	export let disabled = false;
 	export let readonly = false;
 	export let required = false;
@@ -19,7 +20,7 @@
 	export let labelClasses = '';
 
 	const change = (e) => {
-		dispatch('change', { value });
+		dispatch('change', { value: e.target.value });
 	};
 
 	let ref, store;
@@ -40,7 +41,7 @@
 </script>
 
 <label for={id} class={labelClasses}>
-	<Label path={'public/properties/' + id + '/label'} />
+	{label}
 	<!-- a href="/attributes/{label}">{label}</a -->
 </label>
 

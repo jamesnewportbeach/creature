@@ -11,8 +11,6 @@
 	import AddForm from './AddForm.svelte';
 	import Breadcrumbs from './Breadcrumbs.svelte';
 
-	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
-
 	const datetimeLocal = (datetime) => {
 		const dt = new Date(datetime);
 		dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
@@ -20,10 +18,11 @@
 	};
 
 	const signOut = () => {
-			if ($userStore) privateStore.logout($userStore.pub, tenant);
+			if ($userStore) privateStore.logout($userStore.pub);
 		},
 		attributeChanged = (e) => {
-			publicStore.update($activeNodeStore, e.detail, (d) => {});
+			console.log(e.detail);
+			gun.path($activeNodeStore.split('/')).put(e.detail);
 		},
 		removeAttribute = (e) => {
 			gun
@@ -33,32 +32,9 @@
 		};
 
 	let active = {};
-	$: active; // = $nodesStore.find((d) => d.id === $activeNodeStore) || {};
-	$: endPath = '';
-	$: parentPath = '';
-	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
+	$: active;
 
-	const setPage = (pathName) => {
-		if (tenant) {
-			const pathParts = pathName.split('/');
-			if (pathParts.length > 1) {
-				endPath = pathParts.pop();
-				const start = pathParts.shift();
-				parentPath = pathParts.join('/');
-			}
-
-			const f = tenant + '/' + pathName.replace('/', '');
-			activeNodeStore.set(f);
-		}
-	};
-
-	page.subscribe((p) => {
-		setPage(p.url.pathname);
-	});
-
-	onMount(() => {
-		setPage($page.url.pathname);
-	});
+	onMount(() => {});
 
 	activeNodeStore.subscribe((activeNode) => {
 		if (activeNode) {
@@ -107,23 +83,24 @@
 {/if}
 
 <div class="px-3 mt-3 text-sm">
-	<div class="text-sm mb-1">
-		<Breadcrumbs path={$activeNodeStore} />
-	</div>
+	{#if $activeNodeStore}
+		<div class="text-sm mb-1">
+			<Breadcrumbs path={$activeNodeStore} />
+		</div>
 
-	<h2 class="break-all mb-3 mt-3">
-		{#if active.icon}<i class="fal fa-{active.icon.value} opacity-50 mr-2" />{/if}
-		{active.label ? $page.url.pathname : endPath}
-	</h2>
+		<h2 class="break-all mb-3 mt-3">
+			{#if active.icon}<i class="fal fa-{active.icon.value} opacity-50 mr-2" />{/if}
+		</h2>
 
-	<AddForm path={$activeNodeStore} />
+		<AddForm path={$activeNodeStore} />
 
-	<Form
-		bind:data={active}
-		disableDelete={false}
-		on:valueChanged={attributeChanged}
-		on:removeAttribute={removeAttribute}
-	/>
+		<Form
+			bind:data={active}
+			disableDelete={false}
+			on:valueChanged={attributeChanged}
+			on:removeAttribute={removeAttribute}
+		/>
+	{/if}
 
 	<Login />
 </div>

@@ -46,10 +46,8 @@
 	}
 
 	function handleChange(e) {
-		if ('type' in e.detail) {
-			attributeType = inputTypes.find((d) => d.value === e.detail.type);
-		} else {
-			// attributeType =
+		if ('input-type' in e.detail) {
+			attributeType = inputTypes.find((d) => d.value === e.detail['input-type']);
 		}
 		attributes = attributes.map((i) => {
 			delete i.created;
@@ -96,7 +94,9 @@
 				} else {
 					const predicate = statementA.value.split('/').pop();
 
-					publicStore.create($activeNodeStore + '/' + predicate, statementB, () => {
+					console.log($activeNodeStore + '/' + predicate);
+
+					gun.path(($activeNodeStore + '/' + predicate).split('/')).put(statementB, () => {
 						reset();
 					});
 				}
@@ -115,10 +115,11 @@
 			.read('properties')
 			.map()
 			.on((d) => {
-				if (d) {
+				if (d && d._) {
 					const p = d._['#'].split('/');
 					attributesObj[d._['#']] = {
 						value: d._['#'],
+						'input-type': d['input-type'],
 						label: d['label@' + $languageStore] || p[p.length - 1]
 					};
 				}

@@ -22,10 +22,8 @@
 	};
 
 	const updateValue = (e, key, item) => {
-			let o = {};
-			o[key] = item.value;
-			values[key] = item.value;
-			dispatch('valueChanged', o);
+			// values[key] = item.value;
+			dispatch('valueChanged', e.detail);
 			dispatch('valuesChanged', values);
 		},
 		removeValue = (e, key) => {

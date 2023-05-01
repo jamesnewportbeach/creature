@@ -299,8 +299,8 @@ export const privateStore = customStore(gunUser.map(), {
 			const newData = { ...formData };
 			delete newData.password;
 
-			newData.lastLoginAt = now();
-			newData.isLoggedIn = true;
+			newData['created-at'] = now();
+			newData['logged-in'] = true;
 
 			handleLogin(newData, n, cb);
 		});
@@ -309,8 +309,8 @@ export const privateStore = customStore(gunUser.map(), {
 		gunUser.auth(alias, password, (n) => {
 			handleLogin(
 				{
-					lastLoginAt: now(),
-					isLoggedIn: true,
+					'created-at': now(),
+					'logged-in': true,
 					alias,
 					tenant
 				},
@@ -320,7 +320,7 @@ export const privateStore = customStore(gunUser.map(), {
 		});
 	},
 	logout: (pub) => {
-		publicStore.update(PUBLIC_USERS + '/' + pub, { isLoggedIn: false }, (d) => {
+		publicStore.update(PUBLIC_USERS + '/' + pub, { 'logged-in': false }, (d) => {
 			gunUser.leave().once(() => {
 				userStore.set(null);
 			});
