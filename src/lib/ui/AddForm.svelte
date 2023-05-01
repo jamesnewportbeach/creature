@@ -1,27 +1,26 @@
 <script>
 	import { onMount } from 'svelte';
 	import { activeNodeStore } from '$lib/stores/ui/app-store';
-	import { publicStore, attributesStore } from '$lib/stores/gun/store';
+	import { publicStore, gun, gunUser, languageStore } from '$lib/stores/gun/store';
 	import Select from 'svelte-select';
 	import { nanoid } from 'nanoid';
 	import Tree from './Tree.svelte';
-	import { page } from '$app/stores';
 
-	$: tenant = $page.url.hostname?.indexOf('.') > -1 ? $page.url.hostname.split('.')[0] : 'www';
+	export let path = '';
 
 	const newId = nanoid(11);
 
-	let attributesLocation = 'links2',
+	let attributesLocation = 'properties',
+		attributes = [],
 		filterText = '',
 		value = '',
-		language = 'en',
 		statementA,
 		attributeType,
 		statementB,
 		statementBInput,
 		statementBTextarea;
 
-	const attributeTypes = [
+	const inputTypes = [
 		{ value: 'text', label: 'Text' },
 		{ value: 'object', label: 'Object' },
 		{ value: 'number', label: 'Number' },
@@ -48,7 +47,7 @@
 
 	function handleChange(e) {
 		if ('type' in e.detail) {
-			attributeType = attributeTypes.find((d) => d.value === e.detail.type);
+			attributeType = inputTypes.find((d) => d.value === e.detail.type);
 		} else {
 			// attributeType =
 		}
@@ -72,7 +71,7 @@
 			statementB = null;
 			if (statementBTextarea) statementBTextarea.value = '';
 			if (statementBInput) statementBInput.value = '';
-			attributeType = { ...attributeTypes[0] };
+			attributeType = { ...inputTypes[0] };
 		},
 		submit = () => {
 			if (statementA && statementB) {
@@ -84,10 +83,10 @@
 					const now = new Date();
 
 					const o = {
-						type: attributeType.value,
+						'input-type': attributeType.value,
 						'created-at': now.getTime()
 					};
-					o['label@' + language] = statementA.label;
+					o['label@' + $languageStore] = statementA.label;
 
 					publicStore.create(attributesLocation + '/' + predicate, o, () => {
 						publicStore.create($activeNodeStore + '/' + predicate, statementB, () => {
@@ -106,30 +105,24 @@
 			}
 		};
 
-	$: attributes = Object.entries($attributesStore)
-		.map((d) => {
-			d[1].value = d[0];
-			return d[1];
-		})
-		.sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
+	$: attributesObj = {};
+	$: attributes = Object.entries(attributesObj).map((d) => d[1]);
 
 	onMount(() => {
+		attributeType = { ...inputTypes[0] };
+
 		publicStore
-			.read(attributesLocation)
+			.read('properties')
 			.map()
-			.once((d) => {
+			.on((d) => {
 				if (d) {
-					attributesStore.update((orig) => {
-						orig[d._['#']] = {
-							label: d['label@' + language],
-							type: d.type
-						};
-						return orig;
-					});
+					const p = d._['#'].split('/');
+					attributesObj[d._['#']] = {
+						value: d._['#'],
+						label: d['label@' + $languageStore] || p[p.length - 1]
+					};
 				}
 			});
-
-		attributeType = { ...attributeTypes[0] };
 	});
 </script>
 
@@ -161,7 +154,7 @@
 	<div class="col-span-2 styled">
 		<Select
 			disabled={statementA?.value !== statementA?.label}
-			items={attributeTypes}
+			items={inputTypes}
 			inputAttributes={{ autocomplete: 'chrome-off', name: newId + 'attributeType' }}
 			bind:value={attributeType}
 			clearable={false}
@@ -192,7 +185,8 @@
 		{/if}
 
 		{#if attributeType && attributeType?.value === 'object'}
-			<Tree path={'tenants/' + tenant} />
+			Obj
+			<!-- Tree / -->
 		{/if}
 	</div>
 

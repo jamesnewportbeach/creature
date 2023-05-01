@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 export const nodesStore = writable([]);
 export const edgesStore = writable([]);
-export const activeNodeStore = writable(null);
+export const activeNodeStore = writable('');
 
 export const sampleNodes = {
 	nodes: [

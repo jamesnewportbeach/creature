@@ -1,4 +1,5 @@
 <script>
+	import Label from '$lib/ui/Label.svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
 	// import { userStore } from '$lib/stores/ui/uiStore';
 	// import { customStore } from '$lib/stores/gun/customStore';
@@ -7,7 +8,6 @@
 
 	export let value;
 	export let list = '';
-	export let label = 'Label';
 	export let placeholder = '';
 
 	export let type = 'text';
@@ -39,11 +39,10 @@
 	});
 </script>
 
-{#if label}
-	<label for={id} class={labelClasses}>
-		<a href="/attributes/{label}">{label}</a>
-	</label>
-{/if}
+<label for={id} class={labelClasses}>
+	<Label path={'public/properties/' + id + '/label'} />
+	<!-- a href="/attributes/{label}">{label}</a -->
+</label>
 
 {#if type === 'text' || type === 'string' || type === 'text-i18n'}
 	{#if value?.length > 100}

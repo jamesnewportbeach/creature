@@ -9,12 +9,11 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let label = '';
 	export let value;
 	export let list = '';
 	export let placeholder = '';
 
-	export let type = 'text';
+	let type = 'text';
 	export let id = '';
 
 	export let disabled = false;
@@ -73,7 +72,7 @@
 	on:pointerout={() => (canDelete = false)}
 >
 	{#if typeof value === 'object'}
-		{#if value['#'].indexOf('tenants/' + tenant + '/users/') === 0 && value['#'].split('/').length === 4}
+		{#if value['#'].indexOf('users/') === 0 && value['#'].split('/').length === 4}
 			<User id={value['#']} />
 		{:else}
 			<button
@@ -84,7 +83,6 @@
 	{:else}
 		<Input
 			{type}
-			{label}
 			{id}
 			value={localValue}
 			{placeholder}

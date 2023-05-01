@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { activeNodeStore } from '$lib/stores/ui/app-store';
-	import { userStore, privateStore, publicStore, attributesStore } from '$lib/stores/gun/store';
+	import { userStore, privateStore, publicStore, gun } from '$lib/stores/gun/store';
 	import Form from '$lib/common/Form.svelte';
 	import Login from '$lib/ui/Login.svelte';
 	import Tooltip from '$lib/common/Tooltip.svelte';
@@ -26,7 +26,10 @@
 			publicStore.update($activeNodeStore, e.detail, (d) => {});
 		},
 		removeAttribute = (e) => {
-			publicStore.delete($activeNodeStore + '/' + e.detail.key, (d) => {});
+			gun
+				.path($activeNodeStore.split('/'))
+				.get(e.detail.key)
+				.put(null, (d) => {});
 		};
 
 	let active = {};
@@ -59,13 +62,13 @@
 
 	activeNodeStore.subscribe((activeNode) => {
 		if (activeNode) {
-			publicStore.read($activeNodeStore).on((d) => {
+			gun.path($activeNodeStore.split('/')).on((d) => {
 				if (d) {
 					const newActive = {};
 					Object.keys(d).forEach((key) => {
 						if (key !== '_') {
 							if (d[key] !== null) {
-								let t = $attributesStore[key] || 'text';
+								let t = 'text';
 								if (t === 'object') {
 									newActive[key] = { type: 'object', label: key, value: d[key]['#'] };
 								} else {
@@ -94,7 +97,7 @@
 </script>
 
 {#if $userStore}
-	<div class="float-right">
+	<div class="float-right mt-1 mr-3">
 		<Tooltip position="left" text="Log out {$userStore.alias}">
 			<Button ghost={true} on:buttonClick={signOut}>
 				<Icon classNames="fas fa-sign-out" />
@@ -105,7 +108,7 @@
 
 <div class="px-3 mt-3 text-sm">
 	<div class="text-sm mb-1">
-		<Breadcrumbs path={'tenants/' + $activeNodeStore} />
+		<Breadcrumbs path={$activeNodeStore} />
 	</div>
 
 	<h2 class="break-all mb-3 mt-3">
@@ -113,7 +116,7 @@
 		{active.label ? $page.url.pathname : endPath}
 	</h2>
 
-	<AddForm />
+	<AddForm path={$activeNodeStore} />
 
 	<Form
 		bind:data={active}
